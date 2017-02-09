@@ -69,5 +69,5 @@ def pa(request):
             group['sentences'].append(sentence.prettify().replace('\n ','').replace('</em>','</em> ').replace('<em class=\"hot\"> ',' <em class=\"hot\">').replace('\n','').replace('<li>','').replace('</li>',''))
         res['examples'].append(group)
 
-        
+
     return JsonResponse(res)
