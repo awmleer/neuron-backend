@@ -1329,7 +1329,7 @@ pill
 bay
 ceremony
 formula
-reservior
+reservoir
 delete
 pump
 backward
