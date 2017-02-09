@@ -4,7 +4,8 @@ from . import views
 
 app_name = 'app'
 urlpatterns = [
-    url(r'^pa/$',views.pa),
+    url(r'^repo/list/$',views.repo_list),
+    url(r'^repo/(?P<repo_id>[0-9]+)/$',views.repo),
 
     # url(r'^$',views.index,name='index'),
     # url(r'^index/$',views.index,name='index'),
