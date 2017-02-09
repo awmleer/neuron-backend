@@ -37,7 +37,7 @@ class Command(BaseCommand):
             if len(Entry.objects.filter(word=str(line)))>0:
                 self.stdout.write(self.style.SUCCESS('Already exist [%s]' %line))
                 continue
-            time.sleep(2)
+            time.sleep(1)
             result = urllib.request.urlopen("http://dict.cn/%s" % urllib.request.quote(line)).read()
             soup = BeautifulSoup(result)
             definitions = soup.select('.word .basic ul li')
