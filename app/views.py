@@ -20,15 +20,34 @@ def pa(request):
     soup=BeautifulSoup(result)
     # print(result)
     # items=soup.select('.s-item-container')
-    definitions=soup.select('.dict-basic-ul')
+    definitions=soup.select('.dict-basic-ul li')
+    phonetics=soup.select('.word .phonetic span')
     res={
         'word':soup.select('.word-cont .keyword')[0].get_text(strip=True),
         'level':soup.select('.word-cont a')[1].get('class')[0].replace('level_','',1),
+        'phonetic':{
+            'UK':{
+                'symbol':phonetics[0].select('bdo')[0].get_text(),
+                'sound':{
+                    'female':phonetics[0].select('i.sound')[0].get('naudio'),
+                    'male':phonetics[0].select('i.sound')[1].get('naudio')
+                }
+            },
+            'US':{
+                'symbol':phonetics[1].select('bdo')[0].get_text(),
+                'sound':{
+                    'female':phonetics[1].select('i.sound')[0].get('naudio'),
+                    'male':phonetics[1].select('i.sound')[1].get('naudio')
+                }
+            }
+        },
         # 'syllable':soup.select('.word-cont .keyword')[0].get('tip').replace('音节划分：','',1),
         'definitions':[],
         'examples':[]
     }
     for definition in definitions:
+        if definition.get('style') is not None: continue
+        # print(definition.get('style'))
         res['definitions'].append({
             'type':definition.select('span')[0].get_text(),
             'text':definition.select('strong')[0].get_text()
@@ -49,19 +68,6 @@ def pa(request):
                 i_tag.decompose()
             group['sentences'].append(sentence.prettify().replace('\n ','').replace('</em>','</em> ').replace('<em class=\"hot\"> ',' <em class=\"hot\">').replace('\n','').replace('<li>','').replace('</li>',''))
         res['examples'].append(group)
-    # for item in items:
-    #     res.append({
-    #         'title':item.select('.s-access-title')[0].get_text(strip=True),
-    #         'links':{
-    #             # 'douban':item.select('.info h2 a')[0].get('href')
-    #             'amazon':item.select('.s-access-detail-page')[0].get('href')
-    #         },
-    #         'pic_src':item.select('img')[0].get('src'),
-    #         # 'pic_src':item.select('.pic .nbg img')[0].get('src'),
-    #         'author':item.contents[2].select('span')[-1].get_text(),
-    #         'pub_time':item.select('> div:nth-of-type(3) > div:nth-of-type(1) span')[-1].get_text(),
-    #         # 'pub':item.select('.pub')[0].get_text(strip=True),
-    #         # 'rating':item.select('.info .star .rating_nums')[0].get_text(strip=True) if len(item.select('.info .star .rating_nums'))>0 else 'N/A',
-    #         'rating':item.select('div')[-1].select('span')[-1].get_text()
-    #     })
+
+        
     return JsonResponse(res)
