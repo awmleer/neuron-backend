@@ -26,6 +26,7 @@ class Entry(models.Model):
 class Repo(models.Model):
     name=models.CharField(max_length=50,default='new repo')
     words=models.TextField(default=[])
+    amount=models.IntegerField(default=0)
     def set_words(self, x):
         self.words = json.dumps(x)
     def get_words(self):

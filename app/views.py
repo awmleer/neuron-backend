@@ -20,8 +20,9 @@ def repo_list(request):
     repos=Repo.objects.all()
     for repo in repos:
         res.append({
-            'repo_id':repo.id,
-            'name':repo.name
+            'id':repo.id,
+            'name':repo.name,
+            'amount':repo.amount
         })
     return JsonResponse(res,safe=False)
 
@@ -30,8 +31,22 @@ def repo_list(request):
 def repo(request,repo_id):
     repo=Repo.objects.get(id=repo_id)
     res={
-        'repo_id':repo.id,
+        'id':repo.id,
         'name':repo.name,
+        'amount':repo.amount,
         'words':repo.get_words()
     }
     return JsonResponse(res)
+
+
+def entry(request,word):
+    e=Entry.objects.get(word=word)
+    res={
+        'word':e.word,
+        'level':e.level,
+        'definitions':e.get_definitions(),
+        'phonetic':e.get_phonetic(),
+        'sentences':e.get_sentences()
+    }
+    return JsonResponse(res)
+

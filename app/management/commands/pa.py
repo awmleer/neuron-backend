@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         pass
-        # parser.add_argument('index',type=int)
+        parser.add_argument('index',type=int)
         # parser.add_argument('name',type=str)
         # parser.add_argument(
         #     '--delete',
@@ -28,18 +28,22 @@ class Command(BaseCommand):
         # UserInfo.objects.create(user=user,name=options['name'],type='高级用户',expiration=timezone.now()+timedelta(days=30))
         # self.stdout.write(self.style.SUCCESS('Successfully create user [%s]' % (options['phone'])))
 
-        file = open("cet4.txt")
+        file = open("tofel5000.txt")
 
+        count=0
         while 1:
             line = file.readline().replace('\n','')
             if not line:
                 break
+            count+=1
+            if(count<options['index']):
+                continue
             if len(Entry.objects.filter(word=str(line)))>0:
                 self.stdout.write(self.style.SUCCESS('Already exist [%s]' %line))
                 continue
             time.sleep(1)
             result = urllib.request.urlopen("http://dict.cn/%s" % urllib.request.quote(line)).read()
-            soup = BeautifulSoup(result)
+            soup = BeautifulSoup(result,'html.parser')
             definitions = soup.select('.word .basic ul li')
             phonetics = soup.select('.word .phonetic span')
             res = {
@@ -47,17 +51,17 @@ class Command(BaseCommand):
                 'level': soup.select('.word-cont a')[1].get('class')[0].replace('level_', '', 1) if len(soup.select('.word-cont a'))>=2 else 0,
                 'phonetic': {
                     'UK': {
-                        'symbol': phonetics[0].select('bdo')[0].get_text() if len(phonetics[0].select('bdo'))>0 else '',
+                        'symbol': (phonetics[0].select('bdo')[0].get_text() if len(phonetics[0].select('bdo'))>0 else '') if len(phonetics)>0 else '',
                         'sound': {
-                            'female': phonetics[0].select('i.sound')[0].get('naudio'),
-                            'male': phonetics[0].select('i.sound')[1].get('naudio')
+                            'female': phonetics[0].select('i.sound')[0].get('naudio') if len(phonetics)>0 else '',
+                            'male': phonetics[0].select('i.sound')[1].get('naudio') if len(phonetics)>0 else ''
                         }
                     },
                     'US': {
-                        'symbol': phonetics[1].select('bdo')[0].get_text() if len(phonetics[1].select('bdo'))>0 else '',
+                        'symbol': (phonetics[1].select('bdo')[0].get_text() if len(phonetics[1].select('bdo'))>0 else '') if len(phonetics)>0 else '',
                         'sound': {
-                            'female': phonetics[1].select('i.sound')[0].get('naudio'),
-                            'male': phonetics[1].select('i.sound')[1].get('naudio')
+                            'female': phonetics[1].select('i.sound')[0].get('naudio') if len(phonetics)>0 else '',
+                            'male': phonetics[1].select('i.sound')[1].get('naudio') if len(phonetics)>0 else ''
                         }
                     }
                 },
@@ -87,12 +91,15 @@ class Command(BaseCommand):
                             .replace('<li>', '')
                             .replace('</li>', '')
                     )
+            if res['word']!= line:
+                self.stdout.write(self.style.ERROR('Word not identical [%d] %s & %s' % (count,line,res['word'])))
+                return
             entry=Entry(word=res['word'],level=int(res['level']))
             entry.set_definitions(res['definitions'])
             entry.set_sentences(res['sentences'])
             entry.set_phonetic(res['phonetic'])
             entry.save()
-            self.stdout.write(self.style.SUCCESS('Add word [%s]' % (res['word'])))
+            self.stdout.write(self.style.SUCCESS('Add word [%d] %s' % (count,res['word'])))
 
 
 

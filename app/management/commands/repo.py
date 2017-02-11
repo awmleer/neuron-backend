@@ -19,15 +19,19 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
-        repo=Repo.objects.create()
-        file = open("cet4.txt")
+        repo=Repo.objects.get(id=3)
+        file = open("tofel5000.txt")
         words=[]
         while 1:
             line = file.readline().replace('\n','')
             if not line:
                 break
+            if line in words:
+                continue
             words.append(line)
+        words.sort()
         repo.set_words(words)
+        repo.amount=len(words)
         repo.save()
         self.stdout.write(self.style.SUCCESS('Repo added'))
 

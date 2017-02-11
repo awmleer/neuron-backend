@@ -6,7 +6,7 @@ app_name = 'app'
 urlpatterns = [
     url(r'^repo/list/$',views.repo_list),
     url(r'^repo/(?P<repo_id>[0-9]+)/$',views.repo),
-
+    url(r'^entry/(?P<word>.+)/$',views.entry),
     # url(r'^$',views.index,name='index'),
     # url(r'^index/$',views.index,name='index'),
     # url(r'^story/add/$',views.story_add,name='story_add'),
