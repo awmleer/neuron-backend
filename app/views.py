@@ -50,3 +50,36 @@ def entry(request,word):
     }
     return JsonResponse(res)
 
+
+
+@require_http_methods(["POST"])
+def login(request):
+    data = json.loads(request.body.decode())
+    user = auth.authenticate(username=data['phone'], password=data['password']) #电话号码当做username来用
+    if user is not None:
+        # the password verified for the user
+        if user.is_active:
+            # User is valid, active and authenticated
+            auth.login(request, user)
+            res = HttpResponse('success')
+        else:
+            # The password is valid, but the account has been disabled!
+            res = HttpResponse('您的账号已被锁定')
+    else:
+        # the authentication system was unable to verify the username and password
+        # The username and password were incorrect.
+        res = HttpResponse('用户名或密码错误')
+    return res
+
+
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponse('success')
+
+
+@login_required
+def is_logged_in(request):
+    # logger.info(request.user.user_info.get())
+    return HttpResponse('success')

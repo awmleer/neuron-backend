@@ -1,8 +1,18 @@
 from django.db import models
 import json
+from django.utils import timezone
 
 
-# Create your models here.
+
+
+
+class UserInfo(models.Model):
+    user=models.ForeignKey('auth.User',on_delete=models.CASCADE,related_name='user_info')
+    name = models.CharField(max_length=50, default='新用户')
+    def __str__(self):
+        return self.name
+
+
 class Entry(models.Model):
     word=models.CharField(max_length=30)
     level=models.SmallIntegerField()
