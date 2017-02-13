@@ -72,14 +72,27 @@ def login(request):
     return res
 
 
-
-
 def logout(request):
     auth.logout(request)
     return HttpResponse('success')
 
 
-@login_required
 def is_logged_in(request):
     # logger.info(request.user.user_info.get())
-    return HttpResponse('success')
+    if request.user.is_authenticated:
+        return HttpResponse('true')
+    else:
+        return HttpResponse('false')
+
+
+
+@require_http_methods(['GET'])
+@login_required
+def userinfo(request):
+    user_info=request.user.user_info.get()
+    res={
+        'id':request.user.id,
+        'phone':request.user.username,
+        'name':user_info.name
+    }
+    return JsonResponse(res)
