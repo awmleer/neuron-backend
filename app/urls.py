@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^account/userinfo/',views.userinfo),
     url(r'^account/logout/',views.logout),
     url(r'^sync/check/',views.sync_check),
+    url(r'^sync/upload/',views.sync_upload),
+    url(r'^sync/download/',views.sync_download),
     # url(r'^$',views.index,name='index'),
     # url(r'^index/$',views.index,name='index'),
     # url(r'^story/add/$',views.story_add,name='story_add'),
