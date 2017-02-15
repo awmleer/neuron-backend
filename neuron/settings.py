@@ -124,6 +124,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+LOGIN_URL='/denied/'
+
 # 日志
 LOGGING = {
     'version': 1,

@@ -41,3 +41,15 @@ class Repo(models.Model):
         self.words = json.dumps(x)
     def get_words(self):
         return json.loads(self.words)
+
+
+
+class SyncData(models.Model):
+    user=models.ForeignKey('auth.User',related_name='sync_data')
+    sync_time=models.DateTimeField(auto_now=True)
+    data=models.TextField(default={})
+    def set_data(self, x):
+        self.data = json.dumps(x)
+    def get_data(self):
+        return json.loads(self.data)
+

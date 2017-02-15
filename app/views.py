@@ -96,3 +96,17 @@ def userinfo(request):
         'name':user_info.name
     }
     return JsonResponse(res)
+
+
+
+@login_required
+def sync_check(request):
+    datas=SyncData.objects.filter(user=request.user)
+    if(len(datas)==0):
+        res=0
+    else:
+        data=datas[0]
+        res=data.sync_time.timestamp()*1000
+    return HttpResponse(res)
+
+
