@@ -12,7 +12,6 @@ from django.conf import settings
 import random,string
 import  urllib.request,urllib.parse
 # import hashlib
-from bs4 import BeautifulSoup
 
 
 # Create your views here.

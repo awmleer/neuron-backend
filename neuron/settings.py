@@ -19,15 +19,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
+import key
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')-%nw_y6y38y(+kzuq7=v#5z*qpv+b=k-xq@g5)sco0h=ku&vf'
+SECRET_KEY = key.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 import flag
 
 DEBUG = flag.DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['neuron.sparker.top']
 
 
 # Application definition
@@ -122,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT='/var/www/neuron/static/'
+STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static/'),
+    )
 
 
 LOGIN_URL='/denied/'
