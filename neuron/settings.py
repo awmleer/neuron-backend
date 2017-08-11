@@ -28,7 +28,7 @@ import flag
 
 DEBUG = flag.DEBUG
 
-ALLOWED_HOSTS = ['neuron.sparker.top']
+ALLOWED_HOSTS = ['127.0.0.1','neuron.sparker.top']
 
 
 # Application definition
@@ -80,9 +80,18 @@ WSGI_APPLICATION = 'neuron.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'neuron',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'POST': '5432',
     }
+    # old sqlite db
+    # 'sqlite': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
 }
 
 
@@ -125,8 +134,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT='/var/www/neuron/static/'
 STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static/'),
-    )
+    os.path.join(BASE_DIR, 'static/'),
+)
 
 
 LOGIN_URL='/denied/'

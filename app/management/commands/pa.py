@@ -28,7 +28,7 @@ class Command(BaseCommand):
         # UserInfo.objects.create(user=user,name=options['name'],type='高级用户',expiration=timezone.now()+timedelta(days=30))
         # self.stdout.write(self.style.SUCCESS('Successfully create user [%s]' % (options['phone'])))
 
-        file = open("tofel5000.txt")
+        file = open("ielts.txt")
 
         count=0
         while 1:
@@ -44,6 +44,12 @@ class Command(BaseCommand):
             time.sleep(1)
             result = urllib.request.urlopen("http://dict.cn/%s" % urllib.request.quote(line)).read()
             soup = BeautifulSoup(result,'html.parser')
+
+            chart = soup.select('#dict-chart-basic')
+            rates='{}'
+            if len(chart)>0:
+                rates=urllib.parse.unquote(chart[0].get('data'))
+
             definitions = soup.select('.word .basic ul li')
             phonetics = soup.select('.word .phonetic span')
             res = {
@@ -98,6 +104,7 @@ class Command(BaseCommand):
             entry.set_definitions(res['definitions'])
             entry.set_sentences(res['sentences'])
             entry.set_phonetic(res['phonetic'])
+            entry.definition_rates = rates
             entry.save()
             self.stdout.write(self.style.SUCCESS('Add word [%d] %s' % (count,res['word'])))
 
