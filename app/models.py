@@ -20,11 +20,14 @@ class Entry(models.Model):
     definitions=JSONField(default=[])
     definition_rates=JSONField(default={})
     phonetic=JSONField(default={})
-    sentences=JSONField(default=[]) #TODO remove this
+    sentencesTemp=JSONField(default=[]) #TODO remove this
+    # [sentences]
 
 
 class Sentence(models.Model):
+    entry=models.ForeignKey('Entry',on_delete=models.CASCADE,related_name='sentences',db_index=True)
     text=models.TextField()
+    # [stars]
 
 
 class Star(models.Model):
