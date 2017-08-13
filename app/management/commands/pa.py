@@ -101,9 +101,9 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR('Word not identical [%d] %s & %s' % (count,line,res['word'])))
                 return
             entry=Entry(word=res['word'],level=int(res['level']))
-            entry.set_definitions(res['definitions'])
-            entry.set_sentences(res['sentences'])
-            entry.set_phonetic(res['phonetic'])
+            entry.definitions=res['definitions']
+            entry.sentences=res['sentences']
+            entry.phonetic=res['phonetic']
             entry.definition_rates = rates
             entry.save()
             self.stdout.write(self.style.SUCCESS('Add word [%d] %s' % (count,res['word'])))

@@ -1,8 +1,7 @@
 from django.db import models
 import json
-from django.utils import timezone
-
-
+# from django.utils import timezone
+from django.contrib.postgres.fields import JSONField
 
 
 
@@ -18,30 +17,10 @@ class UserInfo(models.Model):
 class Entry(models.Model):
     word=models.CharField(max_length=30)
     level=models.SmallIntegerField()
-
-    definitions=models.TextField(default='[]')
-    def set_definitions(self, x):
-        self.definitions = json.dumps(x)
-    def get_definitions(self):
-        return json.loads(self.definitions)
-
-    definition_rates=models.TextField(default='{}')
-    def set_definition_rates(self, x):
-        self.definition_rates = json.dumps(x)
-    def get_definition_rates(self):
-        return json.loads(self.definition_rates)
-
-    phonetic=models.TextField(default='{}')
-    def set_phonetic(self, x):
-        self.phonetic = json.dumps(x)
-    def get_phonetic(self):
-        return json.loads(self.phonetic)
-
-    sentences=models.TextField(default='[]')
-    def set_sentences(self, x):
-        self.sentences = json.dumps(x)
-    def get_sentences(self):
-        return json.loads(self.sentences)
+    definitions=JSONField(default=[])
+    definition_rates=JSONField(default={})
+    phonetic=JSONField(default={})
+    sentences=JSONField(default=[])
 
 
 

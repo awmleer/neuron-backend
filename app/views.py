@@ -44,9 +44,9 @@ def entry(request,word):
     res={
         'word':e.word,
         'level':e.level,
-        'definitions':e.get_definitions(),
-        'phonetic':e.get_phonetic(),
-        'sentences':e.get_sentences()
+        'definitions':e.definitions,
+        'phonetic':e.phonetic,
+        'sentences':e.sentences
     }
     return JsonResponse(res)
 
