@@ -30,7 +30,7 @@ class Command(BaseCommand):
                 continue
             words.append(line)
         words.sort()
-        repo.set_words(words)
+        repo.words=words
         repo.amount=len(words)
         repo.save()
         self.stdout.write(self.style.SUCCESS('Repo added'))

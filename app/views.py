@@ -34,7 +34,7 @@ def repo(request,repo_id):
         'id':repo.id,
         'name':repo.name,
         'amount':repo.amount,
-        'words':repo.get_words()
+        'words':repo.words
     }
     return JsonResponse(res)
 

@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import JSONField
 
 
 class UserInfo(models.Model):
-    user=models.ForeignKey('auth.User',on_delete=models.CASCADE,related_name='user_info')
+    user=models.OneToOneField('auth.User',on_delete=models.CASCADE,related_name='user_info',db_index=True)
     name = models.CharField(max_length=50, default='新用户')
     def __str__(self):
         return self.name
@@ -15,30 +15,36 @@ class UserInfo(models.Model):
 
 
 class Entry(models.Model):
-    word=models.CharField(max_length=30)
+    word=models.CharField(max_length=30,db_index=True)
     level=models.SmallIntegerField()
     definitions=JSONField(default=[])
     definition_rates=JSONField(default={})
     phonetic=JSONField(default={})
-    sentences=JSONField(default=[])
+    sentences=JSONField(default=[]) #TODO remove this
 
+
+class Sentence(models.Model):
+    text=models.TextField()
+
+
+class Star(models.Model):
+    user = models.ForeignKey('auth.User',on_delete=models.CASCADE,related_name='stars',db_index=True)
+    sentence = models.ForeignKey('Sentence',on_delete=models.CASCADE,related_name='stars',db_index=True)
 
 
 class Repo(models.Model):
     name=models.CharField(max_length=50,default='new repo')
-    words=models.TextField(default=[])
-    amount=models.IntegerField(default=0)
-    def set_words(self, x):
-        self.words = json.dumps(x)
-    def get_words(self):
-        return json.loads(self.words)
+    words=JSONField(default=[]) # TODO remove this
+    entries=models.ManyToManyField('Entry',related_name='repos')
+    amount=models.IntegerField(default=0) # TODO remove this
+
 
 
 
 class SyncData(models.Model):
     user=models.ForeignKey('auth.User',related_name='sync_data')
     sync_time=models.DateTimeField(auto_now=True)
-    data=models.TextField(default={})
+    data=models.TextField(default='{}')
     def set_data(self, x):
         self.data = json.dumps(x)
     def get_data(self):

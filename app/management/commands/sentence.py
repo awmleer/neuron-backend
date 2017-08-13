@@ -18,4 +18,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         entries=Entry.objects.all()
-        self.stdout.write(self.style.SUCCESS('Successfully create user [%s]' % (options['name'])))
+        for entry in entries:
+            pass
+            # newSentences=[]
+            # # i=0
+            # for sentence in entry.sentences:
+            #     newSentences.append(sentence['text'])
+            #     # i+=1
+            # entry.sentences=newSentences
+            # entry.save()
+        self.stdout.write(self.style.SUCCESS('Done'))
