@@ -26,7 +26,14 @@ class Entry(models.Model):
 
 class Sentence(models.Model):
     entry=models.ForeignKey('Entry',on_delete=models.CASCADE,related_name='sentences',db_index=True)
-    text=models.TextField()
+    english=models.TextField()
+    chinese=models.TextField()
+    def dict(self):
+        return {
+            'id':self.id,
+            'english':self.english,
+            'chinese':self.chinese
+        }
     # [stars]
 
 
