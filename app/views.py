@@ -41,12 +41,18 @@ def repo(request,repo_id):
 
 def entry(request,word):
     e=Entry.objects.get(word=word)
+    sentences=[]
+    for s in e.sentences.all():
+        sentences.append({
+            'id':s.id,
+            'text':s.text
+        })
     res={
         'word':e.word,
         'level':e.level,
         'definitions':e.definitions,
         'phonetic':e.phonetic,
-        'sentences':e.sentences
+        'sentences':sentences
     }
     return JsonResponse(res)
 
