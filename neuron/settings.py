@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
+    'corsheaders',
+    'app.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
@@ -82,8 +83,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'neuron',
-        'USER': 'root',
-        'PASSWORD': '',
         'HOST': '127.0.0.1',
         'POST': '5432',
     }
