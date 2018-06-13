@@ -5,15 +5,6 @@ from django.contrib.postgres.fields import JSONField
 
 
 
-class UserInfo(models.Model):
-    user=models.OneToOneField('auth.User',on_delete=models.CASCADE,related_name='user_info',db_index=True)
-    name = models.CharField(max_length=50, default='新用户')
-    def __str__(self):
-        return self.name
-
-
-
-
 class Entry(models.Model):
     word=models.CharField(max_length=30,db_index=True)
     level=models.SmallIntegerField()
