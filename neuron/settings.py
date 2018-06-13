@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,9 +29,15 @@ import flag
 
 DEBUG = flag.DEBUG
 
-ALLOWED_HOSTS = ['127.0.0.1','neuron.sparker.top']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8100'
+    'localhost:8080'
+)
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = default_headers + ('app-session-id',)
+CORS_EXPOSE_HEADERS = ['content-filename', 'app-set-session-id']
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,6 +54,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

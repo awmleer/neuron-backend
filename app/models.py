@@ -52,7 +52,7 @@ class Repo(models.Model):
 
 
 class SyncData(models.Model):
-    user=models.ForeignKey('auth.User',related_name='sync_data')
+    user=models.ForeignKey('auth.User',related_name='sync_data', on_delete=models.SET_NULL, null=True)
     sync_time=models.DateTimeField(auto_now=True)
     data=models.TextField(default='{}')
     def set_data(self, x):
