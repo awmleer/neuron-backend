@@ -1,7 +1,5 @@
-from django.shortcuts import render
 from django.utils import timezone
-from datetime import datetime, timedelta
-import django.contrib.auth as auth #用户登录认证
+import django.contrib.auth as auth
 from app.models import *
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required,permission_required
