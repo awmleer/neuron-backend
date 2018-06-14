@@ -3,18 +3,18 @@ from django.contrib.postgres.fields import JSONField
 
 
 class Entry(models.Model):
-    word=models.CharField(max_length=30,db_index=True)
-    level=models.SmallIntegerField()
-    definitions=JSONField(default=[])
-    definition_rates=JSONField(default={})
-    phonetic=JSONField(default={})
+    word = models.CharField(max_length=30, db_index=True)
+    rank = models.SmallIntegerField(null=True, default=None)
+    definitions = JSONField(default=[])
+    pronounce = JSONField(default={})
     # [sentences]
 
 
 class Sentence(models.Model):
-    entry=models.ForeignKey('Entry',on_delete=models.CASCADE,related_name='sentences',db_index=True)
-    english=models.TextField()
-    chinese=models.TextField()
+    entry = models.ForeignKey('Entry',on_delete=models.CASCADE,related_name='sentences',db_index=True)
+    english = models.TextField()
+    chinese = models.TextField()
+    reference = models.TextField(default='')
     def dict(self):
         return {
             'id':self.id,
