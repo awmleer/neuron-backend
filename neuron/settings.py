@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'account.apps.AccountConfig',
+    'bank.apps.BankConfig',
 ]
 
 MIDDLEWARE = [

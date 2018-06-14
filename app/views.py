@@ -11,50 +11,6 @@ import  urllib.request,urllib.parse
 # import hashlib
 
 
-# Create your views here.
-def repo_list(request):
-    res=[]
-    repos=Repo.objects.all()
-    for repo in repos:
-        res.append({
-            'id':repo.id,
-            'name':repo.name,
-            'amount':repo.amount
-        })
-    return JsonResponse(res,safe=False)
-
-
-
-def repo(request,repo_id):
-    repo=Repo.objects.get(id=repo_id)
-    res={
-        'id':repo.id,
-        'name':repo.name,
-        'amount':repo.amount,
-        'words':repo.words
-    }
-    return JsonResponse(res)
-
-
-def entry(request,word):
-    e=Entry.objects.get(word=word)
-    sentences=[]
-    for s in e.sentences.all():
-        sentences.append({
-            'id':s.id,
-            'text':s.text
-        })
-    res={
-        'word':e.word,
-        'level':e.level,
-        'definitions':e.definitions,
-        'phonetic':e.phonetic,
-        'sentences':sentences
-    }
-    return JsonResponse(res)
-
-
-
 
 @login_required
 def sync_check(request):
