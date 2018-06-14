@@ -33,5 +33,5 @@ class Repo(models.Model):
 
 
 class Star(models.Model):
-    user = models.ForeignKey('auth.User',on_delete=models.CASCADE,related_name='stars',db_index=True)
+    user = models.ForeignKey('account.User',on_delete=models.CASCADE,related_name='stars',db_index=True)
     sentence = models.ForeignKey('Sentence',on_delete=models.CASCADE,related_name='stars',db_index=True)
