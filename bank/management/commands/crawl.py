@@ -10,7 +10,6 @@ class Command(BaseCommand):
     help = 'python manage.py crawl'
 
     def add_arguments(self, parser):
-        pass
         parser.add_argument('index',type=int)
         # parser.add_argument('name',type=str)
         # parser.add_argument(
