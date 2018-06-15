@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import JSONField
 
 
 class Entry(models.Model):
-    word = models.CharField(max_length=30, db_index=True)
+    word = models.CharField(max_length=30, db_index=True, unique=True)
     rank = models.SmallIntegerField(null=True, default=None)
     definitions = JSONField(default=[])
     pronounce = JSONField(default={})
@@ -25,8 +25,8 @@ class Sentence(models.Model):
 
 
 class Repo(models.Model):
-    name=models.CharField(max_length=50,default='new repo')
-    entries=models.ManyToManyField('Entry',related_name='repos')
+    name=models.CharField(max_length=50, default='new repo', unique=True, db_index=True)
+    entries=models.ManyToManyField('Entry', related_name='repos')
 
 
 class SentenceStar(models.Model):

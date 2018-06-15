@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from bank.models import Entry, Sentence
+from bank.models import Entry, Sentence, Repo
 import  urllib.request,urllib.parse
 from bs4 import BeautifulSoup
 import time
@@ -7,9 +7,10 @@ from django.db import transaction
 
 
 class Command(BaseCommand):
-    help = 'python manage.py crawl'
+    help = 'python manage.py crawl <repo_name> <index>'
 
     def add_arguments(self, parser):
+        parser.add_argument('repo_name',type=str)
         parser.add_argument('index',type=int)
         # parser.add_argument('name',type=str)
         # parser.add_argument(
@@ -21,12 +22,8 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
-        # user = User.objects.create_user(username=options['phone'],password=options['phone'])
-        # user.save()
-        # UserInfo.objects.create(user=user,name=options['name'],type='高级用户',expiration=timezone.now()+timedelta(days=30))
-        # self.stdout.write(self.style.SUCCESS('Successfully create user [%s]' % (options['phone'])))
-
-        file = open("cet4.txt")
+        file = open('%s.txt'%options['repo_name'])
+        repo = Repo.objects.get(name=options['repo_name'])
 
         count=0
         while 1:
@@ -112,6 +109,8 @@ class Command(BaseCommand):
                         chinese=chinese,
                         reference=reference
                     )
+
+                repo.entries.add(entry)
 
             self.stdout.write(self.style.SUCCESS('Add word [%d] %s with %d sentences.' % (count,word,len(li_tags))))
 
