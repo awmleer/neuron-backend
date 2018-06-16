@@ -8,6 +8,18 @@ class Entry(models.Model):
     definitions = JSONField(default=[])
     pronounce = JSONField(default={})
     # [sentences]
+    def as_dict(self):
+        sentences = []
+        for s in self.sentences.all():
+            sentences.append(s.as_dict())
+        return {
+            'id': self.id,
+            'word': self.word,
+            'rank': self.rank,
+            'definitions': self.definitions,
+            'pronounce': self.pronounce,
+            'sentences': sentences
+        }
 
 
 class Sentence(models.Model):
