@@ -15,7 +15,7 @@ class Sentence(models.Model):
     english = models.TextField()
     chinese = models.TextField()
     reference = models.TextField(default='')
-    def dict(self):
+    def as_dict(self):
         return {
             'id':self.id,
             'english':self.english,
@@ -27,6 +27,12 @@ class Sentence(models.Model):
 class Repo(models.Model):
     name=models.CharField(max_length=50, default='new repo', unique=True, db_index=True)
     entries=models.ManyToManyField('Entry', related_name='repos')
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'amount': self.entries.count()
+        }
 
 
 class SentenceStar(models.Model):

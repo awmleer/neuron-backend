@@ -6,12 +6,8 @@ def repo_list(request):
     res=[]
     repos=Repo.objects.all()
     for repo in repos:
-        res.append({
-            'id':repo.id,
-            'name':repo.name,
-            'amount':repo.amount
-        })
-    return JsonResponse(res,safe=False)
+        res.append(repo.as_dict())
+    return JsonResponse(res, safe=False)
 
 
 def repo(request,repo_id):
