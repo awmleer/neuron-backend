@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'account.apps.AccountConfig',
     'bank.apps.BankConfig',
+    'study.apps.StudyConfig',
 ]
 
 MIDDLEWARE = [

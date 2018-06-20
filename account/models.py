@@ -12,7 +12,8 @@ class User(AbstractUser):
             'unique': _("A user with that username already exists."),
         },
     )
-    nickname=models.CharField(max_length=20, default='new user')
+    nickname = models.CharField(max_length=20, default='new user')
+    learned_entries = models.ManyToManyField('bank.Entry', related_name='users', through='study.WordRecord', through_fields=('user', 'entry'))
 
     def __str__(self):
         return 'User({}): {}'.format(self.id, self.nickname)
