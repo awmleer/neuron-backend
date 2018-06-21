@@ -13,7 +13,7 @@ class User(AbstractUser):
         },
     )
     nickname = models.CharField(max_length=20, default='new user')
-    learned_entries = models.ManyToManyField('bank.Entry', related_name='users', through='study.WordRecord', through_fields=('user', 'entry'))
+    learned_entries = models.ManyToManyField('bank.Entry', related_name='users', through='study.EntryRecord', through_fields=('user', 'entry'))
 
     def __str__(self):
         return 'User({}): {}'.format(self.id, self.nickname)

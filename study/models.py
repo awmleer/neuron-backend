@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class WordRecord(models.Model):
+class EntryRecord(models.Model):
     proficiency = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     wait = models.PositiveSmallIntegerField(default=0)
