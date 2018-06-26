@@ -21,7 +21,7 @@ class User(AbstractUser):
     def as_dict(self):
         d = {
             'id':self.id,
-            'phone':self.username,
+            'username':self.username,
             'nickname':self.nickname
         }
         return d

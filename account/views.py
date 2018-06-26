@@ -1,4 +1,4 @@
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.decorators import login_required,permission_required
 from django.http import HttpResponse,JsonResponse,HttpResponseBadRequest,HttpResponseForbidden
 from neuron.utils.decorator import json_request
@@ -6,10 +6,10 @@ import django.contrib.auth as auth
 from neuron.utils.response import ErrorResponse
 
 
+@require_POST
 @json_request
-@require_http_methods(["POST"])
 def login(request):
-    user = auth.authenticate(username=request.json['phone'], password=request.json['password']) #电话号码当做username来用
+    user = auth.authenticate(username=request.json['username'], password=request.json['password']) #电话号码当做username来用
     if user is not None:
         # the password verified for the user
         if user.is_active:
@@ -26,13 +26,13 @@ def login(request):
     return res
 
 
-@require_http_methods(["GET"])
+@require_GET
 def logout(request):
     auth.logout(request)
     return HttpResponse()
 
 
-@require_http_methods(["GET"])
+@require_GET
 def is_logged_in(request):
     # logger.info(request.user.user_info.get())
     if request.user.is_authenticated:
@@ -42,7 +42,7 @@ def is_logged_in(request):
 
 
 
-@require_http_methods(['GET'])
+@require_GET
 @login_required
-def user_info(request):
+def user_profile(request):
     return JsonResponse(request.user.as_dict())
