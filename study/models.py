@@ -4,12 +4,12 @@ from django.utils import timezone
 
 
 class EntryRecord(models.Model):
-    proficiency = models.SmallIntegerField(default=-1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(null=True, blank=True, default=None)
-    entry = models.ForeignKey('bank.Entry', on_delete=models.CASCADE, related_name='entry_records')
-    user = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='entry_records')
-    next_review_date = models.DateField(null=True, blank=True, default=None)
+    proficiency = models.SmallIntegerField(default=-1, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
+    entry = models.ForeignKey('bank.Entry', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
+    user = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
+    next_review_date = models.DateField(null=True, blank=True, default=None, db_index=True)
 
     def flush_updated_at(self):
         self.updated_at = timezone.now()
