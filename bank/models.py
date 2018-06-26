@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import JSONField
 
 
 class Entry(models.Model):
-    word = models.CharField(max_length=30, db_index=True, unique=True)
+    word = models.CharField(max_length=30, primary_key=True)
     rank = models.SmallIntegerField(null=True, default=None)
     definitions = JSONField(default=[])
     pronounce = JSONField(default={})
@@ -13,7 +13,6 @@ class Entry(models.Model):
         for s in self.sentences.all():
             sentences.append(s.as_dict())
         return {
-            'id': self.id,
             'word': self.word,
             'rank': self.rank,
             'definitions': self.definitions,
