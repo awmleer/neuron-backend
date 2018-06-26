@@ -22,7 +22,7 @@ class Entry(models.Model):
 
 
 class Sentence(models.Model):
-    entry = models.ForeignKey('Entry',on_delete=models.CASCADE,related_name='sentences',db_index=True)
+    entry = models.ForeignKey('Entry', on_delete=models.CASCADE, related_name='sentences', db_index=True)
     english = models.TextField()
     chinese = models.TextField()
     reference = models.TextField(default='')
