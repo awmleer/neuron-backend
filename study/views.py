@@ -10,31 +10,30 @@ from .models import EntryRecord
 @require_GET
 @require_login
 def learn_list(request):
-    amount = int(request.GET.get('amount'))
-    if amount<5:
-        return ErrorResponse('单词数量过少')
-    elif amount>100:
-        return ErrorResponse('单词数量过多')
-    all_entries = Repo.objects.get(id=request.GET['repoId']).entries
     records = request.user.entry_records.filter(proficiency=-1)
     res = []
-    generate = request.GET.get('generate')
-    records_exists = records.exists()
-    if records_exists and generate is None:
-        for record in records:
-            res.append(record.as_dict())
-    else:
-        if records_exists and generate is not None:
-            records.delete()
-        learned_entries = request.user.learned_entries
-        entries = all_entries.difference(learned_entries)[:amount]
-        for entry in entries:
-            record = EntryRecord(
-                entry=entry,
-                user=request.user
-            )
-            record.save()
-            res.append(record.as_dict())
+    for record in records:
+        res.append(record.as_dict())
+    return JsonResponse(res, safe=False)
+
+
+@require_GET
+@require_login
+def learn_list_generate(request):
+    amount = int(request.GET.get('amount'))
+    if amount < 5:
+        return ErrorResponse('单词数量过少')
+    elif amount > 100:
+        return ErrorResponse('单词数量过多')
+    all_entries = Repo.objects.get(id=request.GET['repoId']).entries
+    request.user.entry_records.filter(proficiency=-1).delete()
+    res = []
+    learned_entries = request.user.learned_entries
+    entries = all_entries.difference(learned_entries)[:amount]
+    for entry in entries:
+        record = EntryRecord(entry=entry, user=request.user)
+        record.save()
+        res.append(record.as_dict())
     return JsonResponse(res, safe=False)
 
 
