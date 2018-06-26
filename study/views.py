@@ -61,12 +61,16 @@ def record_update(request, record_id, mark):
         if record.proficiency == -1:
             record.proficiency = 3
         else:
-            record.proficiency += 1
+            if record.proficiency > 0:
+                record.proficiency -= 1
     elif mark == 'forget':
         if record.proficiency == -1:
             record.proficiency = 0
         else:
-            record.proficiency += 1
+            if record.proficiency > 2:
+                record.proficiency -= 2
+            else:
+                record.proficiency = 0
     else:
         return HttpResponseBadRequest()
     record.flush_next_review_date()
