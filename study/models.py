@@ -45,8 +45,10 @@ class EntryRecord(models.Model):
         return {
             'id': self.id,
             'createdAt': self.created_at.timestamp(),
+            'updatedAt': self.updated_at.timestamp(),
             'entry': self.entry.as_dict(),
             'nextReviewDate': int(time.mktime(self.next_review_date.timetuple())),
-            'proficiency': self.proficiency
+            'proficiency': self.proficiency,
+            'starredSentenceIds': self.starred_sentence_ids,
         }
 

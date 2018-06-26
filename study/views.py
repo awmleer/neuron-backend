@@ -100,7 +100,7 @@ def star_sentence(request, sentence_id):
     if sentence_id not in record.starred_sentence_ids:
         record.starred_sentence_ids.append(sentence_id)
         record.save()
-    return HttpResponse()
+    return JsonResponse(record.starred_sentence_ids, safe=True)
 
 
 @require_GET
@@ -111,5 +111,5 @@ def unstar_sentence(request, sentence_id):
     if sentence_id in record.starred_sentence_ids:
         record.starred_sentence_ids.remove(sentence_id)
         record.save()
-    return HttpResponse()
+    return JsonResponse(record.starred_sentence_ids, safe=True)
 
