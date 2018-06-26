@@ -6,6 +6,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.utils import timezone
 from .models import EntryRecord
 
+
 @require_GET
 @require_login
 def generate_learn_list(request):
@@ -74,5 +75,6 @@ def record_update(request, record_id, mark):
     else:
         return HttpResponseBadRequest()
     record.flush_next_review_date()
+    record.flush_updated_at()
     record.save()
     return HttpResponse()
