@@ -1,5 +1,5 @@
 from .models import Repo, Entry
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from neuron.utils.decorator import require_login
 from django.views.decorators.http import require_GET
 
@@ -19,8 +19,9 @@ def repo(request,repo_id):
     return JsonResponse(r.as_dict())
 
 
-@require_login
 @require_GET
+@require_login
 def entry(request,word):
     e=Entry.objects.get(word=word)
     return JsonResponse(e.as_dict())
+

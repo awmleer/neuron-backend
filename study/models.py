@@ -1,6 +1,7 @@
 from django.db import models
 import time
 from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
 
 
 class EntryRecord(models.Model):
@@ -10,6 +11,7 @@ class EntryRecord(models.Model):
     entry = models.ForeignKey('bank.Entry', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
     user = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
     next_review_date = models.DateField(null=True, blank=True, default=None, db_index=True)
+    starred_sentence_ids = ArrayField(models.PositiveIntegerField())
 
     def flush_updated_at(self):
         self.updated_at = timezone.now()

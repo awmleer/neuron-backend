@@ -45,7 +45,3 @@ class Repo(models.Model):
             'amount': self.entries.count()
         }
 
-
-class SentenceStar(models.Model):
-    user = models.ForeignKey('account.User',on_delete=models.CASCADE,related_name='sentence_stars',db_index=True)
-    sentence = models.ForeignKey('Sentence',on_delete=models.CASCADE,related_name='stars',db_index=True)

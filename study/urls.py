@@ -7,4 +7,6 @@ urlpatterns = [
     path('learn/today-count/', views.today_learned_count),
     path('review/list/', views.review_list),
     path('update-records/', views.update_records),
+    path('sentence/<int:sentence_id>/star/', views.star_sentence),
+    path('sentence/<int:sentence_id>/unstar/', views.unstar_sentence),
 ]

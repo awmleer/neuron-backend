@@ -1,5 +1,5 @@
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
-from bank.models import Repo
+from bank.models import Repo, Sentence
 from neuron.utils.decorator import require_login, json_request
 from neuron.utils.response import ErrorResponse
 from django.views.decorators.http import require_GET, require_POST
@@ -90,3 +90,26 @@ def update_records(request):
         record.flush_updated_at()
         record.save()
     return HttpResponse()
+
+
+@require_GET
+@require_login
+def star_sentence(request, sentence_id):
+    sentence = Sentence.objects.get(id=sentence_id)
+    record = EntryRecord.objects.get(entry_id=sentence.entry_id, user=request.user)
+    if sentence_id not in record.starred_sentence_ids:
+        record.starred_sentence_ids.append(sentence_id)
+        record.save()
+    return HttpResponse()
+
+
+@require_GET
+@require_login
+def unstar_sentence(request, sentence_id):
+    sentence = Sentence.objects.get(id=sentence_id)
+    record = EntryRecord.objects.get(entry_id=sentence.entry_id, user=request.user)
+    if sentence_id in record.starred_sentence_ids:
+        record.starred_sentence_ids.remove(sentence_id)
+        record.save()
+    return HttpResponse()
+
