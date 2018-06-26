@@ -31,6 +31,16 @@ def generate_learn_list(request):
 
 @require_GET
 @require_login
+def generate_review_list(request):
+    records = request.user.entry_records.filter(next_review_date__lte=timezone.now())
+    res = []
+    for record in records:
+        res.append(record.as_dict())
+    return JsonResponse(res, safe=False)
+
+
+@require_GET
+@require_login
 def today_learned_count(request):
     count = request.user.entry_records.filter(created_at__date__gte=timezone.now())
     return HttpResponse(count)
