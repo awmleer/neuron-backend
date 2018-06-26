@@ -12,6 +12,7 @@ class EntryRecord(models.Model):
     user = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
     next_review_date = models.DateField(null=True, blank=True, default=None, db_index=True)
     starred_sentence_ids = ArrayField(models.PositiveIntegerField())
+    tags = ArrayField(models.CharField(max_length=20))
 
     def flush_updated_at(self):
         self.updated_at = timezone.now()
