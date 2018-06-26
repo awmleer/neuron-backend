@@ -51,5 +51,6 @@ class EntryRecord(models.Model):
             'nextReviewDate': int(time.mktime(self.next_review_date.timetuple())),
             'proficiency': self.proficiency,
             'starredSentenceIds': self.starred_sentence_ids,
+            'tags': self.tags,
         }
 
