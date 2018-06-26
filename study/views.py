@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from bank.models import Repo
 from neuron.utils.decorator import require_login, json_request
 from neuron.utils.response import ErrorResponse
@@ -15,7 +15,7 @@ def generate_learn_list(request):
     elif amount>100:
         return ErrorResponse('单词数量过多')
     all_entries = Repo.objects.get(id=request.GET['repoId']).entries
-    request.user.entry_records.filter(proficiency=0).delete()
+    request.user.entry_records.filter(proficiency=-1).delete()
     learned_entries = request.user.learned_entries
     entries = all_entries.difference(learned_entries)[:amount]
     res = []
@@ -36,4 +36,29 @@ def today_learned_count(request):
     return HttpResponse(count)
 
 
-
+@require_GET
+@require_login
+def record_update(request, record_id, mark):
+    record = request.user.entry_records.get(id=record_id)
+    if mark == 'master':
+        record.proficiency = 8
+    elif mark == 'know':
+        if record.proficiency == -1:
+            record.proficiency = 6
+        else:
+            record.proficiency += 1
+    elif mark == 'vague':
+        if record.proficiency == -1:
+            record.proficiency = 3
+        else:
+            record.proficiency += 1
+    elif mark == 'forget':
+        if record.proficiency == -1:
+            record.proficiency = 0
+        else:
+            record.proficiency += 1
+    else:
+        return HttpResponseBadRequest()
+    record.flush_next_review_date()
+    record.save()
+    return HttpResponse()
