@@ -54,34 +54,39 @@ def today_learned_count(request):
     return HttpResponse(count)
 
 
-@require_GET
+@require_POST
 @require_login
-def record_update(request, record_id, mark):
-    record = request.user.entry_records.get(id=record_id)
-    if mark == 'master':
-        record.proficiency = 8
-    elif mark == 'know':
-        if record.proficiency == -1:
-            record.proficiency = 6
-        else:
-            record.proficiency += 1
-    elif mark == 'vague':
-        if record.proficiency == -1:
-            record.proficiency = 3
-        else:
-            if record.proficiency > 0:
-                record.proficiency -= 1
-    elif mark == 'forget':
-        if record.proficiency == -1:
-            record.proficiency = 0
-        else:
-            if record.proficiency > 2:
-                record.proficiency -= 2
+@json_request
+def update_records(request):
+    for item in request.json:
+        record = request.user.entry_records.get(id=item['id'])
+        mark = item['mark']
+        if record.proficiency != -1 and record.next_review_date > timezone.now():
+            continue
+        if mark == 'master':
+            record.proficiency = 8
+        elif mark == 'know':
+            if record.proficiency == -1:
+                record.proficiency = 6
             else:
+                record.proficiency += 1
+        elif mark == 'vague':
+            if record.proficiency == -1:
+                record.proficiency = 3
+            else:
+                if record.proficiency > 0:
+                    record.proficiency -= 1
+        elif mark == 'forget':
+            if record.proficiency == -1:
                 record.proficiency = 0
-    else:
-        return HttpResponseBadRequest()
-    record.flush_next_review_date()
-    record.flush_updated_at()
-    record.save()
+            else:
+                if record.proficiency > 2:
+                    record.proficiency -= 2
+                else:
+                    record.proficiency = 0
+        else:
+            return HttpResponseBadRequest()
+        record.flush_next_review_date()
+        record.flush_updated_at()
+        record.save()
     return HttpResponse()
