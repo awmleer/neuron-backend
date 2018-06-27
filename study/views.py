@@ -25,11 +25,11 @@ def learn_list_generate(request):
         return ErrorResponse('单词数量过少')
     elif amount > 100:
         return ErrorResponse('单词数量过多')
-    all_entries = Repo.objects.get(id=request.GET['repoId']).entries
+    all_entries = Repo.objects.get(id=request.GET['repoId']).entries.all()
     request.user.entry_records.filter(proficiency=-1).delete()
     res = []
-    learned_entries = request.user.learned_entries
-    entries = all_entries.difference(learned_entries)[:amount]
+    learned_entries = request.user.learned_entries.all()
+    entries = all_entries.difference(learned_entries).all()[:amount]
     for entry in entries:
         record = EntryRecord(entry=entry, user=request.user)
         record.save()

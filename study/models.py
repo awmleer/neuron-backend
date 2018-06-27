@@ -11,8 +11,8 @@ class EntryRecord(models.Model):
     entry = models.ForeignKey('bank.Entry', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
     user = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
     next_review_date = models.DateField(null=True, blank=True, default=None, db_index=True)
-    starred_sentence_ids = ArrayField(models.PositiveIntegerField())
-    tags = ArrayField(models.CharField(max_length=5))
+    starred_sentence_ids = ArrayField(models.PositiveIntegerField(), default=list)
+    tags = ArrayField(models.CharField(max_length=5), default=list)
 
     def flush_updated_at(self):
         self.updated_at = timezone.now()
@@ -45,10 +45,10 @@ class EntryRecord(models.Model):
     def as_dict(self):
         return {
             'id': self.id,
-            'createdAt': self.created_at.timestamp(),
-            'updatedAt': self.updated_at.timestamp(),
+            'createdAt': self.created_at.timestamp() if self.updated_at is not None else None,
+            'updatedAt': self.updated_at.timestamp() if self.updated_at is not None else None,
             'entry': self.entry.as_dict(),
-            'nextReviewDate': int(time.mktime(self.next_review_date.timetuple())),
+            'nextReviewDate': int(time.mktime(self.next_review_date.timetuple()))  if self.next_review_date is not None else None,
             'proficiency': self.proficiency,
             'starredSentenceIds': self.starred_sentence_ids,
             'tags': self.tags,

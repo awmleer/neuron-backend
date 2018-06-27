@@ -100,7 +100,8 @@ class Command(BaseCommand):
                     p_tags = li_tag.select('p')
                     english = ''
                     for span_tag in p_tags[0].select('span'):
-                        english += str(span_tag.contents[0])
+                        for content in span_tag.contents:
+                            english += str(content)
                     chinese = p_tags[1].get_text(strip=True)
                     reference = p_tags[2].get_text(strip=True) if len(p_tags)>2 else ''
                     Sentence.objects.create(
