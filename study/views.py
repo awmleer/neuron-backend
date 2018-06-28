@@ -54,6 +54,14 @@ def today_learned_count(request):
     return HttpResponse(count)
 
 
+@require_GET
+@require_login
+def today_reviewed_count(request):
+    today = timezone.now().date()
+    count = request.user.entry_records.filter(updated_at__date__gte=today).filter(learned_at__date__lt=today).count()
+    return HttpResponse(count)
+
+
 @require_POST
 @require_login
 @json_request
