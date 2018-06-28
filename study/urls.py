@@ -11,4 +11,5 @@ urlpatterns = [
     path('sentence/<int:sentence_id>/star/', views.star_sentence),
     path('sentence/<int:sentence_id>/unstar/', views.unstar_sentence),
     path('record/<int:record_id>/toggle-tag/<str:tag>/', views.record_toggle_tag),
+    path('record/list/<int:page_number>/', views.record_list)
 ]

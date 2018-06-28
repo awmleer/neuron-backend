@@ -5,12 +5,12 @@ from neuron.utils.response import ErrorResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.utils import timezone
 from .models import EntryRecord
-
+from neuron.utils.pagination import generatePage
 
 @require_GET
 @require_login
 def learn_list(request):
-    records = request.user.entry_records.filter(proficiency=-1)
+    records = request.user.entry_records.filter(proficiency=-1).select_related('entry')
     res = []
     for record in records:
         res.append(record.as_dict())
@@ -40,7 +40,7 @@ def learn_list_generate(request):
 @require_GET
 @require_login
 def review_list(request):
-    records = request.user.entry_records.filter(next_review_date__lte=timezone.now())
+    records = request.user.entry_records.filter(next_review_date__lte=timezone.now()).select_related('entry')
     res = []
     for record in records:
         res.append(record.as_dict())
@@ -135,3 +135,11 @@ def record_toggle_tag(request, record_id, tag):
         record.tags.append(tag)
     record.save()
     return JsonResponse(record.tags, safe=False)
+
+
+@require_GET
+@require_login
+def record_list(request, page_number):
+    records = request.user.entry_records.filter(proficiency__gte=0).select_related('entry')
+    page = generatePage(records, page_number, 20, lambda r:r.as_dict())
+    return JsonResponse(page)
