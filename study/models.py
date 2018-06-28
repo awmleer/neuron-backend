@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import ArrayField
 
 class EntryRecord(models.Model):
     proficiency = models.SmallIntegerField(default=-1, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    learned_at = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
     updated_at = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
     entry = models.ForeignKey('bank.Entry', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
     user = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='entry_records', db_index=True)
@@ -45,7 +45,7 @@ class EntryRecord(models.Model):
     def as_dict(self):
         return {
             'id': self.id,
-            'createdAt': self.created_at.timestamp() if self.updated_at is not None else None,
+            'learnedAt': self.learned_at.timestamp() if self.updated_at is not None else None,
             'updatedAt': self.updated_at.timestamp() if self.updated_at is not None else None,
             'entry': self.entry.as_dict(),
             'nextReviewDate': int(time.mktime(self.next_review_date.timetuple()))  if self.next_review_date is not None else None,
