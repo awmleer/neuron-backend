@@ -50,7 +50,7 @@ def review_list(request):
 @require_GET
 @require_login
 def today_learned_count(request):
-    count = request.user.entry_records.filter(created_at__date__gte=timezone.now())
+    count = request.user.entry_records.filter(created_at__date__gte=timezone.now()).count()
     return HttpResponse(count)
 
 
@@ -85,10 +85,11 @@ def update_records(request):
                 else:
                     record.proficiency = 0
         else:
-            return HttpResponseBadRequest()
-        record.flush_next_review_date()
-        record.flush_updated_at()
-        record.save()
+            mark = None
+        if mark is not None:
+            record.flush_next_review_date()
+            record.flush_updated_at()
+            record.save()
     return HttpResponse()
 
 
