@@ -6,6 +6,8 @@ from django.views.decorators.http import require_GET, require_POST
 from django.utils import timezone
 from .models import EntryRecord
 from neuron.utils.pagination import generatePage
+import datetime
+
 
 @require_GET
 @require_login
@@ -50,7 +52,7 @@ def review_list(request):
 @require_GET
 @require_login
 def today_learned_count(request):
-    count = request.user.entry_records.filter(learned_at__date__gte=timezone.now().date()).count()
+    count = request.user.entry_records.filter(learned_at__date=datetime.date.today()).count()
     return HttpResponse(count)
 
 
