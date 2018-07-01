@@ -104,6 +104,8 @@ class Command(BaseCommand):
                             english += str(content)
                     chinese = p_tags[1].get_text(strip=True)
                     reference = p_tags[2].get_text(strip=True) if len(p_tags)>2 else ''
+                    if entry.sentences.filter(english__exact=english).exists():
+                        continue
                     Sentence.objects.create(
                         entry=entry,
                         english=english,
