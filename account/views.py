@@ -1,9 +1,9 @@
 from django.views.decorators.http import require_GET, require_POST
-from django.contrib.auth.decorators import login_required,permission_required
 from django.http import HttpResponse,JsonResponse,HttpResponseBadRequest,HttpResponseForbidden
-from neuron.utils.decorator import json_request
+from neuron.utils.decorator import json_request, require_login
 import django.contrib.auth as auth
 from neuron.utils.response import ErrorResponse
+from .models import User
 
 
 @require_POST
@@ -32,6 +32,20 @@ def logout(request):
     return HttpResponse()
 
 
+@require_POST
+@json_request
+def signup(request):
+    if User.objects.filter(username=request.json['username']).exists():
+        return ErrorResponse('用户名已被使用')
+    user = User.objects.create(
+        username=request.json['username'],
+        password=request.json['password'],
+        nickname=request.json['nickname'],
+    )
+    auth.login(request, user)
+    return HttpResponse()
+
+
 @require_GET
 def is_logged_in(request):
     # logger.info(request.user.user_info.get())
@@ -43,6 +57,6 @@ def is_logged_in(request):
 
 
 @require_GET
-@login_required
+@require_login
 def user_profile(request):
     return JsonResponse(request.user.as_dict())
