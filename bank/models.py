@@ -32,7 +32,6 @@ class Sentence(models.Model):
             'english':self.english,
             'chinese':self.chinese
         }
-    # [stars]
 
 
 class Repo(models.Model):

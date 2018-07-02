@@ -130,6 +130,7 @@ class Command(BaseCommand):
                     break
                 except Exception as e:
                     traceback.print_exc()
+                    time.sleep(5)
                     continue
             if not success:
                 self.stdout.write(self.style.ERROR('Failed [%s]'%line))
