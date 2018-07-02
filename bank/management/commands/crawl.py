@@ -4,6 +4,7 @@ import  urllib.request,urllib.parse
 from bs4 import BeautifulSoup
 import time
 from django.db import transaction
+import traceback
 
 
 class Command(BaseCommand):
@@ -22,31 +23,16 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
-        file = open('%s.txt'%options['repo_name'])
-        repo = Repo.objects.get(name=options['repo_name'])
-
-        count=0
-        while 1:
-            line = file.readline().replace('\n','')
-            if not line:
-                break
-            count+=1
-            if(count<options['index']):
-                continue
-            if len(Entry.objects.filter(word=str(line)))>0:
-                self.stdout.write(self.style.SUCCESS('Already exist [%s]' %line))
-                continue
-            time.sleep(5)
-
+        def do_crawl(word):
             with transaction.atomic():
-                result = urllib.request.urlopen("http://youdao.com/w/%s/" % urllib.request.quote(line)).read()
+                result = urllib.request.urlopen("http://youdao.com/w/%s/" % urllib.request.quote(word)).read()
                 soup = BeautifulSoup(result,'html.parser')
                 content = soup.select('#results-contents')[0]
 
                 phrs_list_tab = content.select('#phrsListTab')[0]
                 word = phrs_list_tab.select('h2.wordbook-js span.keyword')[0].get_text(strip=True)
-                if word != line:
-                    self.stdout.write(self.style.ERROR('Word not identical [%d] %s & %s' % (count, line, word)))
+                if word != word:
+                    self.stdout.write(self.style.ERROR('Word not identical [%d] %s & %s' % (count, word, word)))
                     return
 
                 entry = Entry(word=word)
@@ -86,36 +72,69 @@ class Command(BaseCommand):
                         elif tag.get_text(strip=True)[0] == '美':
                             entry.pronounce['US'] = phonetic
 
-                result = urllib.request.urlopen("http://dict.cn/%s" % urllib.request.quote(line)).read()
+                result = urllib.request.urlopen("http://dict.cn/%s" % urllib.request.quote(word)).read()
                 soup = BeautifulSoup(result, 'html.parser')
                 entry.rank = soup.select('.word-cont a')[1].get('class')[0].replace('level_', '', 1) if len(soup.select('.word-cont a'))>=2 else 0
 
                 entry.save()
 
                 # sentences
-                result = urllib.request.urlopen("http://youdao.com/example/blng/eng/%s/" % urllib.request.quote(line)).read()
+                result = urllib.request.urlopen("http://youdao.com/example/blng/eng/%s/" % urllib.request.quote(word)).read()
                 soup = BeautifulSoup(result, 'html.parser')
-                li_tags = soup.select('#results-contents ul.ol')[0].select('li')
-                for li_tag in li_tags:
-                    p_tags = li_tag.select('p')
-                    english = ''
-                    for span_tag in p_tags[0].select('span'):
-                        for content in span_tag.contents:
-                            english += str(content)
-                    chinese = p_tags[1].get_text(strip=True)
-                    reference = p_tags[2].get_text(strip=True) if len(p_tags)>2 else ''
-                    if entry.sentences.filter(english__exact=english).exists():
-                        continue
-                    Sentence.objects.create(
-                        entry=entry,
-                        english=english,
-                        chinese=chinese,
-                        reference=reference
-                    )
+                sentence_count = 0
+                if len(soup.select('#results-contents ul.ol'))>0:
+                    li_tags = soup.select('#results-contents ul.ol')[0].select('li')
+                    sentence_count = len(li_tags)
+                    for li_tag in li_tags:
+                        p_tags = li_tag.select('p')
+                        english = ''
+                        for span_tag in p_tags[0].select('span'):
+                            for content in span_tag.contents:
+                                english += str(content)
+                        chinese = p_tags[1].get_text(strip=True)
+                        reference = p_tags[2].get_text(strip=True) if len(p_tags)>2 else ''
+                        if entry.sentences.filter(english__exact=english).exists():
+                            continue
+                        Sentence.objects.create(
+                            entry=entry,
+                            english=english,
+                            chinese=chinese,
+                            reference=reference
+                        )
+                    repo.entries.add(entry)
+            self.stdout.write(self.style.SUCCESS('Add word [%d] %s with %d sentences.' % (count, word, sentence_count)))
+            if sentence_count==0:
+                self.stdout.write(self.style.WARNING('No sentence found.'))
 
-                repo.entries.add(entry)
 
-            self.stdout.write(self.style.SUCCESS('Add word [%d] %s with %d sentences.' % (count,word,len(li_tags))))
+        file = open('%s.txt'%options['repo_name'])
+        repo = Repo.objects.get(name=options['repo_name'])
+
+        count=0
+        while 1:
+            line = file.readline().replace('\n','')
+            if not line:
+                break
+            count+=1
+            if(count<options['index']):
+                continue
+            if len(Entry.objects.filter(word=str(line)))>0:
+                self.stdout.write(self.style.SUCCESS('Already exist [%s]' %line))
+                continue
+            time.sleep(5)
+            success = False
+            for i in range(0,5):
+                try:
+                    do_crawl(line)
+                    success = True
+                    break
+                except Exception as e:
+                    traceback.print_exc()
+                    continue
+            if not success:
+                self.stdout.write(self.style.ERROR('Failed [%s]'%line))
+                return
+
 
 
 
