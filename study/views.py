@@ -71,7 +71,7 @@ def update_records(request):
     for item in request.json:
         record = request.user.entry_records.get(id=item['id'])
         mark = item['mark']
-        if record.proficiency != -1 and record.next_review_date > timezone.now():
+        if record.proficiency != -1 and record.next_review_date > datetime.date.today():
             continue
         if mark == 'master':
             record.proficiency = 8
